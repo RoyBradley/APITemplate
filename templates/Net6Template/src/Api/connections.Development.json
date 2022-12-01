@@ -1,0 +1,5 @@
+{
+	"ConnectionStrings": {
+		"ApplicationCS": "<Development Database Connection String>"
+	}
+}
