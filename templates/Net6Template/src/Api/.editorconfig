@@ -31,8 +31,8 @@ dotnet_style_qualification_for_property = false
 dotnet_style_qualification_for_method = false
 dotnet_style_qualification_for_event = false
 
-dotnet_analyzer_diagnostic.severity = suggestion
-dotnet_analyzer_diagnostic.category-performance.severity = warning
+#dotnet_analyzer_diagnostic.severity = suggestion
+#dotnet_analyzer_diagnostic.category-performance.severity = warning
 
 [*.{js,css,html,json}]
 indent_size = 2
