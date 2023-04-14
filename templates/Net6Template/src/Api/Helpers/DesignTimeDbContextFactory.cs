@@ -19,7 +19,7 @@ public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ApiDbConte
 		DbContextOptionsBuilder<ApiDbContext> builder = new();
 		string connectionString = configuration.GetConnectionString("ApplicationCS");
 		Console.WriteLine($"Connection String: {connectionString}");
-		builder.UseSqlServer(connectionString);
+		_ = builder.UseSqlServer(connectionString);
 
 		return new ApiDbContext(builder.Options);
 	}

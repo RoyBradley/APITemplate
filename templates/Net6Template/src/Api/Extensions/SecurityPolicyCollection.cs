@@ -1,4 +1,4 @@
-﻿namespace Api.Exceptions;
+﻿namespace Api.Extensions;
 
 
 public static class SecurityPolicyCollection
@@ -13,10 +13,10 @@ public static class SecurityPolicyCollection
 			.AddReferrerPolicyStrictOriginWhenCrossOrigin()
 			.RemoveServerHeader()
 			.AddContentSecurityPolicy(builder => {
-				builder.AddObjectSrc().None();
-				builder.AddFormAction().Self();
-				builder.AddFrameAncestors().Self();
-				builder.AddDefaultSrc();
+				_ = builder.AddObjectSrc().None();
+				_ = builder.AddFormAction().Self();
+				_ = builder.AddFrameAncestors().Self();
+				_ = builder.AddDefaultSrc();
 			})
 			//	for old INTERNET explorer
 			.AddCustomHeader("X-Content-Security-Policy", "default-src 'self'");

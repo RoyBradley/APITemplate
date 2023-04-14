@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Persistence.AppContext;
 
 
-public class ApiDbContext : Microsoft.EntityFrameworkCore.DbContext
+public class ApiDbContext : DbContext
 {
 	public ApiDbContext(DbContextOptions options) : base(options) { }
 
@@ -12,15 +12,6 @@ public class ApiDbContext : Microsoft.EntityFrameworkCore.DbContext
 		await SaveChangesAsync(cancellationToken) > 0;
 
 	//	DeSets Here
-
-	protected override void OnConfiguring(DbContextOptionsBuilder options) {
-		string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")!.ToUpper();
-
-		// See Microsoft Doc "DbContextOptionsBuilder.EnableSensitiveDataLogging Method"
-		if (!string.IsNullOrEmpty(environment) && "DEVELOPMENT".Equals(environment)) {
-			options.EnableSensitiveDataLogging();
-		}
-	}
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder) { }
 }

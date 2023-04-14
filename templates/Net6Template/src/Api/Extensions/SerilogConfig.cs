@@ -3,14 +3,14 @@ using Serilog.Events;
 using Serilog.Formatting.Compact;
 
 
-namespace Api.Exceptions;
+namespace Api.Extensions;
 
 
 public static class SerilogConfig
 {
 	public static void SerilogConfiguration(this ConfigureHostBuilder host, ConfigurationManager configuration) =>
 		host.UseSerilog((ctx, cfg) => {
-			cfg.Enrich.FromLogContext()
+			_ = cfg.Enrich.FromLogContext()
 				.Enrich.WithMachineName()
 				.Enrich.WithProcessId()
 				.Enrich.WithThreadId()
@@ -18,14 +18,14 @@ public static class SerilogConfig
 				.Enrich.WithProperty("Environment", ctx.HostingEnvironment.EnvironmentName);
 
 			if (ctx.HostingEnvironment.IsDevelopment()) {
-				cfg.WriteTo.Async(c => c.Console(new RenderedCompactJsonFormatter()));
-				cfg.MinimumLevel.Override("Microsoft", LogEventLevel.Debug);
-				cfg.MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Debug);
+				_ = cfg.WriteTo.Async(c => c.Console(new RenderedCompactJsonFormatter()));
+				_ = cfg.MinimumLevel.Override("Microsoft", LogEventLevel.Debug);
+				_ = cfg.MinimumLevel.Override("Microsoft.EntityFrameworkCore.Database.Command", LogEventLevel.Debug);
 			}
 			else {
-				cfg.MinimumLevel.Override("Microsoft", LogEventLevel.Warning);
+				_ = cfg.MinimumLevel.Override("Microsoft", LogEventLevel.Warning);
 
-				cfg.WriteTo.Async(f => f.File(configuration.GetSection("LogPath").ToString() ?? string.Empty,
+				_ = cfg.WriteTo.Async(f => f.File(configuration.GetSection("LogPath").ToString() ?? string.Empty,
 					rollingInterval: RollingInterval.Day,
 					fileSizeLimitBytes: 40000000,
 					shared: true,

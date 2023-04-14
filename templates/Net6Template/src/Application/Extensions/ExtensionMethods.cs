@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
+using System.Globalization;
 using System.Text.RegularExpressions;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 
 namespace Application.Extensions;
@@ -20,22 +21,26 @@ public static class ExtensionMethods
 		if (string.IsNullOrWhiteSpace(str)) {
 			return false;
 		}
-
 		str = str.Trim();
-
-		if ((!str.StartsWith("{") || !str.EndsWith("}")) && (!str.StartsWith("[") || !str.EndsWith("]"))) {
-			return false;
+		if ((str.StartsWith("{", StringComparison.CurrentCultureIgnoreCase) &&
+				str.EndsWith("}", StringComparison.CurrentCultureIgnoreCase)) || //For object
+				(str.StartsWith("[", StringComparison.CurrentCultureIgnoreCase) &&
+					str.EndsWith("]", StringComparison.CurrentCultureIgnoreCase))) { //For array
+			try {
+				JToken obj = JToken.Parse(str);
+				return true;
+			}
+			catch (JsonReaderException jex) {
+				//Exception in parsing json
+				Console.WriteLine(jex.Message);
+				return false;
+			}
+			catch (Exception ex) { //some other exception
+				Console.WriteLine(ex.ToString());
+				return false;
+			}
 		}
-
-		try {
-			JToken obj = JToken.Parse(str);
-
-			return true;
-		}
-		catch (JsonReaderException) { //Exception in parsing json
-			return false;
-		}
-		catch (Exception) { //some other exception
+		else {
 			return false;
 		}
 	}
@@ -108,11 +113,9 @@ public static class ExtensionMethods
 
 		string s = str.ClearFormat(); // make sure string is free of format characters
 
-		if (string.IsNullOrEmpty(s.Trim()) || !s.All(char.IsDigit)) {
-			return string.Empty;
-		}
-
-		return s.Length switch { 5 => s, 9 => $"{s[..5]}-{s[5..]}", _ => s };
+		return string.IsNullOrEmpty(s.Trim()) || !s.All(char.IsDigit)
+			? string.Empty
+			: s.Length switch { 5 => s, 9 => $"{s[..5]}-{s[5..]}", _ => s };
 	}
 
 	/// <summary>
@@ -131,15 +134,19 @@ public static class ExtensionMethods
 		string retStr = words.Aggregate("", (current, t) =>
 			current + (TestArticle(t)
 				? t + " "
-				: char.ToUpper(t[0]) + t[1..].ToLower() + " "));
+				: char.ToUpper(t[0], CultureInfo.CurrentCulture) + t[1..].ToLower(CultureInfo.CurrentCulture) + " "));
 
 		return retStr.Trim();
 	}
 
 	private static bool TestArticle(string str) {
 		string[] conj = {
-			"and", "but", "or", "for", "yet", "so", "to", "at",
-			"after", "on", "but", "is", "of", "a", "the"
+			"a", "an", "the", "and", "but", "or", "by", "nor", "yet", "so",
+			"about", "above", "across", "after", "against", "along", "among", "around", "at", "before",
+			"behind", "between", "beyond", "but", "by", "concerning", "despite", "down", "during",
+			"except", "following", "for", "from", "in", "including", "into", "like", "near", "of",
+			"off", "on", "out", "over", "plus", "since", "through", "throughout", "to", "towards",
+			"under", "until", "up", "upon", "with", "within", "without"
 		};
 
 		return conj.Any(s => s == str);

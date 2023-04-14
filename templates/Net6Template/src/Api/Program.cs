@@ -1,4 +1,4 @@
-using Api.Exceptions;
+using Api.Extensions;
 using Api.Middleware;
 
 using Application.Configuration;
@@ -7,14 +7,13 @@ using Application.ServiceRegistration;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 
-using NETCore.MailKit.Extensions;
-using NETCore.MailKit.Infrastructure.Internal;
-
 using Newtonsoft.Json;
 
 using Persistence.ServiceRegistration;
 
 using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SystemConsole.Themes;
 
 using Services.ServiceRegistration;
 
@@ -47,30 +46,25 @@ builder.Configuration.SetBasePath(builder.Environment.ContentRootPath);
 //	Load the environment variables
 builder.Configuration.AddEnvironmentVariables();
 
-//	Email Setup
-IConfigurationSection emailSettingsSection = builder.Configuration.GetSection("EmailSettings");
-EmailSettings emailSettings = emailSettingsSection.Get<EmailSettings>();
-builder.Services.Configure<EmailSettings>(emailSettingsSection);
-
-builder.Services.AddMailKit(optionBuilder => {
-	MailKitOptions options = new() {
-		Server = emailSettings.SmtpHost,
-		Port = emailSettings.SmtpPort,
-		SenderName = emailSettings.EmailFrom,
-		SenderEmail = emailSettings.EmailFrom,
-		Security = emailSettings.SmtpSecurity
-	};
-
-	optionBuilder.UseMailKit(options);
-});
-
 //	Setup AppSettings
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddOptions();
 
 //	Setup Serilog Logging configuration
 builder.Logging.ClearProviders();
-builder.Host.SerilogConfiguration(builder.Configuration);
+builder.Host.UseSerilog((ctx, cfg) => {
+	_ = cfg.MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+		.MinimumLevel.Information()
+		.Enrich.FromLogContext()
+		.Enrich.WithProperty("Application", ctx.HostingEnvironment.ApplicationName)
+		.Enrich.WithProperty("Environment", ctx.HostingEnvironment.EnvironmentName);
+	_ = cfg.WriteTo.Async(c => c.Console(theme: AnsiConsoleTheme.Literate));
+	if (!builder.Environment.IsDevelopment())
+		_ = cfg.WriteTo.Async(c => c.AzureAnalytics(
+			builder.Configuration.GetSection("AzureLogId").Value,
+			builder.Configuration.GetSection("AzureLogKey").Value,
+			ctx.HostingEnvironment.ApplicationName));
+}); 
 
 //	Setup Swagger
 builder.Services.SwaggerServices();
@@ -104,7 +98,7 @@ builder.Services.ConfigureIISServerOptions();
 //	Setup project services
 builder.Services.AddApplicationLayer();
 builder.Services.AddPersistenceInfrastructure();
-builder.Services.AddServiceInfrastructure(builder.Configuration);
+builder.Services.AddServiceInfrastructure();
 
 //	------------------------------------------------
 WebApplication app = builder.Build();

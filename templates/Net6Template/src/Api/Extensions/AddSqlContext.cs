@@ -3,14 +3,14 @@
 using Persistence.AppContext;
 
 
-namespace Api.Exceptions;
+namespace Api.Extensions;
 
 
 public static class AddSqlContext
 {
 	public static void EnableSqlContext(this IServiceCollection services, string connection) =>
 		services.AddDbContext<ApiDbContext>(options => {
-			options.UseSqlServer(connection, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
-			options.EnableDetailedErrors();
+			_ = options.UseSqlServer(connection, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+			_ = options.EnableDetailedErrors();
 		});
 }

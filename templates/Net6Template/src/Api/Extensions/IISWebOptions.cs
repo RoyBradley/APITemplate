@@ -1,4 +1,4 @@
-﻿namespace Api.Exceptions;
+﻿namespace Api.Extensions;
 
 
 public static class IISWebOptions

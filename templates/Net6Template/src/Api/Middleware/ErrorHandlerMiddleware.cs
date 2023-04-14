@@ -1,9 +1,9 @@
-﻿using Domain.Exceptions;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net;
+
+using Domain.Exceptions;
 
 using Newtonsoft.Json;
-
-using System.ComponentModel.DataAnnotations;
-using System.Net;
 
 
 namespace Api.Middleware;

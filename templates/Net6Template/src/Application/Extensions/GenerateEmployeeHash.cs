@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+using System.Globalization;
+using System.Security.Cryptography;
 using System.Text;
 
 
@@ -30,10 +31,10 @@ public static class GenerateEmployeeHash
 		StringBuilder builder = new();
 
 		foreach (byte hashByte in hashBytes) {
-			builder.Append(hashByte.ToString("x2").ToUpper());
+			_ = builder.Append(hashByte.ToString("x2", CultureInfo.CurrentCulture));
 		}
 
 		// Return the employee hash
-		return builder.ToString();
+		return builder.ToString().ToUpper(CultureInfo.CurrentCulture);
 	}
 }
