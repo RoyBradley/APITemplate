@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 
 using Domain.Exceptions;
@@ -19,7 +19,7 @@ public class ErrorHandlerMiddleware
 		_logger = loggerFactory.CreateLogger<ErrorHandlerMiddleware>();
 	}
 
-	public async Task Invoke(HttpContext context) {
+	public async Task Invoke(HttpContext context, string message) {
 		try {
 			await _next(context);
 		}
@@ -27,28 +27,28 @@ public class ErrorHandlerMiddleware
 			HttpResponse response = context.Response;
 
 			response.StatusCode = error switch {
-				ValidationException _ =>
+				ValidationException =>
 					// Validation Exception
 					(int)HttpStatusCode.BadRequest,
-				ConflictException _ =>
+				ConflictException =>
 					// Conflict 409
 					(int)HttpStatusCode.Conflict,
-				NoContentException _ =>
+				NoContentException =>
 					// Not Content 204
 					(int)HttpStatusCode.NoContent,
-				NotFoundException _ =>
+				NotFoundException =>
 					// Not found 404
 					(int)HttpStatusCode.NotFound,
-				UnauthorizedException _ =>
+				UnauthorizedException =>
 					// bad credentials 401
 					(int)HttpStatusCode.Unauthorized,
-				AppException _ =>
+				AppException =>
 					// custom application error 400
 					(int)HttpStatusCode.BadRequest,
-				ForbiddenException _ =>
+				ForbiddenException =>
 					// Forbidden 403
 					(int)HttpStatusCode.Forbidden,
-				ServiceUnavailableException _ =>
+				ServiceUnavailableException =>
 					// Service Note available 503
 					(int)HttpStatusCode.ServiceUnavailable,
 				_ =>
@@ -60,9 +60,6 @@ public class ErrorHandlerMiddleware
 				: error.Message;
 
 			response.ContentType = "application/json";
-
-			_logger.LogError("#### Exception: {@statusCode}{@newline}{@errorMessage}",
-				response.StatusCode, Environment.NewLine, error.Message);
 
 			await response!.WriteAsync(result).ConfigureAwait(false);
 		}

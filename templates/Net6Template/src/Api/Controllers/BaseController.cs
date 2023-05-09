@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace Api.Controllers;
@@ -8,7 +8,8 @@ namespace Api.Controllers;
 [ApiController]
 public class BaseController<T> : ControllerBase where T : BaseController<T>
 {
-	protected readonly ILogger<T> _logger = null!;
+	private readonly ILogger<T> _logger;
+
 	public BaseController() { }
 	public BaseController(ILogger<T> logger) => _logger = logger;
 }

@@ -1,3 +1,5 @@
+using System.Globalization;
+
 using Api.Extensions;
 using Api.Middleware;
 
@@ -12,8 +14,6 @@ using Newtonsoft.Json;
 using Persistence.ServiceRegistration;
 
 using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.SystemConsole.Themes;
 
 using Services.ServiceRegistration;
 
@@ -50,25 +50,14 @@ builder.Configuration.AddEnvironmentVariables();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.AddOptions();
 
-//	Setup Serilog Logging configuration
-builder.Logging.ClearProviders();
-builder.Host.UseSerilog((ctx, cfg) => {
-	_ = cfg.MinimumLevel.Override("Microsoft", LogEventLevel.Error)
-		.MinimumLevel.Information()
-		.Enrich.FromLogContext()
-		.Enrich.WithProperty("Application", ctx.HostingEnvironment.ApplicationName)
-		.Enrich.WithProperty("Environment", ctx.HostingEnvironment.EnvironmentName);
-	_ = cfg.WriteTo.Async(c => c.Console(theme: AnsiConsoleTheme.Literate));
-	if (!builder.Environment.IsDevelopment())
-		_ = cfg.WriteTo.Async(c => c.AzureAnalytics(
-			builder.Configuration.GetSection("AzureLogId").Value,
-			builder.Configuration.GetSection("AzureLogKey").Value,
-			ctx.HostingEnvironment.ApplicationName));
-}); 
 
 //	Setup Swagger
 builder.Services.SwaggerServices();
 builder.Services.AddSwaggerGenNewtonsoftSupport();
+
+//	Setup Serilog Logging configuration
+builder.Logging.ClearProviders();
+builder.Host.SerilogConfiguration(builder.Configuration);
 
 //	Load custom json files
 builder.Configuration.AddJsonFile("connections.json", true, true);
@@ -80,7 +69,7 @@ string connection = builder.Configuration.GetConnectionString("ApplicationCS");
 builder.Services.EnableSqlContext(connection);
 
 // Get Cache Time
-int cacheTime = Convert.ToInt32(builder.Configuration.GetSection("CacheTime").Value);
+int cacheTime = Convert.ToInt32(builder.Configuration.GetSection("CacheTime").Value, new NumberFormatInfo());
 
 //	Response Caching
 builder.Services.AddResponseCaching(options => {
@@ -113,7 +102,7 @@ app.UseHttpsRedirection();
 app.UseSerilogRequestLogging();
 
 //	Add Security Headers
-HeaderPolicyCollection policyCollection = SecurityPolicyCollection.PolicyCollection();
+HeaderPolicyCollection policyCollection = SecurityHeaderPolicy.PolicyCollection();
 app.UseSecurityHeaders(policyCollection);
 
 //	Add Response Compression

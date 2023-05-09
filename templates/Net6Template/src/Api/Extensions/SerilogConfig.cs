@@ -1,4 +1,6 @@
-﻿using Serilog;
+using System.Globalization;
+
+using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Compact;
 
@@ -25,7 +27,8 @@ public static class SerilogConfig
 			else {
 				_ = cfg.MinimumLevel.Override("Microsoft", LogEventLevel.Warning);
 
-				_ = cfg.WriteTo.Async(f => f.File(configuration.GetSection("LogPath").ToString() ?? string.Empty,
+				_ = cfg.WriteTo.Async(f => f.File(configuration.GetSection("LogPath").Value ?? string.Empty,
+					formatProvider: CultureInfo.CurrentCulture,
 					rollingInterval: RollingInterval.Day,
 					fileSizeLimitBytes: 40000000,
 					shared: true,

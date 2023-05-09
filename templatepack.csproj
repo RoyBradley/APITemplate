@@ -2,9 +2,9 @@
 
 	<PropertyGroup>
 		<PackageType>Template</PackageType>
-		<PackageVersion>1.7.0</PackageVersion>
+		<PackageVersion>1.7.5</PackageVersion>
 		<PackageId>OPM.WebAPI.Template</PackageId>
-		<Title>OPM net6.0 Templates</Title>
+		<Title>OPM Net6.0 Templates</Title>
 		<Authors>RW Bradley</Authors>
 		<Description>Templates to use when creating Web APIs for OPM.</Description>
 		<PackageTags>dotnet-new;templates;opm</PackageTags>
@@ -16,6 +16,7 @@
 		<ContentTargetFolders>content</ContentTargetFolders>
 		<NoWarn>$(NoWarn);NU5128</NoWarn>
 		<NoDefaultExcludes>true</NoDefaultExcludes>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>

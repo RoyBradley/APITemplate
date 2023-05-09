@@ -1,7 +1,7 @@
-﻿namespace Api.Extensions;
+namespace Api.Extensions;
 
 
-public static class SecurityPolicyCollection
+public static class SecurityHeaderPolicy
 {
 	public static HeaderPolicyCollection PolicyCollection() {
 		HeaderPolicyCollection policyCollection = new HeaderPolicyCollection()

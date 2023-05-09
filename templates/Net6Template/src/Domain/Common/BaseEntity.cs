@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -6,11 +6,10 @@ namespace Domain.Common;
 
 public class BaseEntity
 {
-	[Key]
-	[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-	public Guid Id { get; set; }
+	[Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+	public int Id { get; set; }
 
 	public BaseEntity() { }
-	public BaseEntity(Guid id) => Id = id;
+	public BaseEntity(int id) => Id = id;
 }
 
