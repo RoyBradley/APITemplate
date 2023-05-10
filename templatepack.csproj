@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<PackageType>Template</PackageType>
-		<PackageVersion>1.7.5</PackageVersion>
+		<PackageVersion>1.7.6</PackageVersion>
 		<PackageId>OPM.WebAPI.Template</PackageId>
 		<Title>OPM Net6.0 Templates</Title>
 		<Authors>RW Bradley</Authors>
@@ -16,7 +16,6 @@
 		<ContentTargetFolders>content</ContentTargetFolders>
 		<NoWarn>$(NoWarn);NU5128</NoWarn>
 		<NoDefaultExcludes>true</NoDefaultExcludes>
-		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 	</PropertyGroup>
 
 	<ItemGroup>
