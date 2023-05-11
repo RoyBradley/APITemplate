@@ -10,6 +10,6 @@ public class BaseController<T> : ControllerBase where T : BaseController<T>
 {
 	private readonly ILogger<T> _logger;
 
-	public BaseController() { }
-	public BaseController(ILogger<T> logger) => _logger = logger;
+	protected BaseController() { }
+	protected BaseController(ILogger<T> logger) => _logger = logger;
 }
