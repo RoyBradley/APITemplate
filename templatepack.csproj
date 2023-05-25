@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<PackageType>Template</PackageType>
-		<PackageVersion>1.7.6</PackageVersion>
+		<PackageVersion>1.8.0</PackageVersion>
 		<PackageId>OPM.WebAPI.Template</PackageId>
 		<Title>OPM Net6.0 Templates</Title>
 		<Authors>RW Bradley</Authors>

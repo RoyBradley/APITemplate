@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Documents/OPMSolutionTemplate.docx
+/Documents/OPMSolutionTemplate.pdf
+/TemplateNuget/Version 1.5.0/Installing OPM Template.docx
+/TemplateNuget/Version 1.6.5/Installing OPM Template 1.6.5.docx
+/TemplateNuget/Version 1.7.0/Installing OPM Template 1.7.0.docx
+/TemplateNuget/Version 1.7.5/Installing OPM Template 1.7.5.docx
+/TemplateNuget/Version 1.7.6/Installing OPM Template 1.7.6.docx
